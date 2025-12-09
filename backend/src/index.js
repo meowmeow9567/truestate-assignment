@@ -17,43 +17,72 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", db: "postgres" });
 });
 
-// Pagination + sales data API
-// Simple sales list with pagination + summary
+// Sales list with pagination + summary
 app.get("/api/sales", async (req, res) => {
   const page = parseInt(req.query.page || "1", 10);
   const limit = parseInt(req.query.limit || "20", 10);
   const offset = (page - 1) * limit;
 
   try {
-    // 1) Fetch paginated rows
+    // 1) Paginated rows
     const dataResult = await pool.query(
       "SELECT * FROM sales ORDER BY id LIMIT $1 OFFSET $2",
       [limit, offset]
     );
 
-    // 2) Total count for pagination
+    // 2) Total rows (for pagination)
     const countResult = await pool.query("SELECT COUNT(*) AS count FROM sales");
 
-    // 3) Summary across all rows (on current dataset)
+    // 3) Summary across all sales
     const summaryResult = await pool.query(`
       SELECT
-        COALESCE(SUM(quantity), 0)                         AS total_units_sold,
-        COALESCE(SUM(final_amount), 0)                     AS total_amount,
-        COALESCE(SUM(total_amount - final_amount), 0)      AS total_discount
+        COALESCE(SUM(quantity), 0)                    AS total_units_sold,
+        COALESCE(SUM(final_amount), 0)                AS total_amount,
+        COALESCE(SUM(total_amount - final_amount), 0) AS total_discount
       FROM sales
     `);
 
     const summaryRow = summaryResult.rows[0];
 
-    // 4) Normalize tags to array for frontend
-    const rows = dataResult.rows.map((row) => ({
-      ...row,
-      tags: row.tags
+    // 4) Normalize each row: snake_case + camelCase + tags[]
+    const rows = dataResult.rows.map((row) => {
+      const tagsArray = row.tags
         ? String(row.tags)
             .split(",")
             .map((t) => t.trim())
-        : [],
-    }));
+        : [];
+
+      const camel = {
+        customerId: row.customer_id,
+        customerName: row.customer_name,
+        phoneNumber: row.phone_number,
+        customerRegion: row.customer_region,
+        customerType: row.customer_type,
+
+        productId: row.product_id,
+        productName: row.product_name,
+
+        pricePerUnit: row.price_per_unit,
+        discountPercentage: row.discount_percentage,
+        totalAmount: row.total_amount,
+        finalAmount: row.final_amount,
+
+        paymentMethod: row.payment_method,
+        orderStatus: row.order_status,
+        deliveryType: row.delivery_type,
+
+        storeId: row.store_id,
+        storeLocation: row.store_location,
+        salespersonId: row.salesperson_id,
+        employeeName: row.employee_name,
+      };
+
+      return {
+        ...row,     // snake_case fields
+        ...camel,   // camelCase fields
+        tags: tagsArray,
+      };
+    });
 
     res.json({
       success: true,
@@ -62,9 +91,17 @@ app.get("/api/sales", async (req, res) => {
       limit,
       data: rows,
       summary: {
+        // expose summary with multiple names so frontend surely picks it
         totalUnitsSold: Number(summaryRow.total_units_sold),
+        totalUnits: Number(summaryRow.total_units_sold),
+        unitsSold: Number(summaryRow.total_units_sold),
+        total_units_sold: Number(summaryRow.total_units_sold),
+
         totalAmount: Number(summaryRow.total_amount),
+        total_amount: Number(summaryRow.total_amount),
+
         totalDiscount: Number(summaryRow.total_discount),
+        total_discount: Number(summaryRow.total_discount),
       },
     });
   } catch (err) {
@@ -76,7 +113,6 @@ app.get("/api/sales", async (req, res) => {
     });
   }
 });
-
 
 // Filter metadata API
 app.get("/api/sales/filters", async (req, res) => {
@@ -148,10 +184,12 @@ app.get("/api/sales/filters", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ Error fetching filters:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to load filters", error: err.message });
+    console.error("❌ Error fetching filters", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to load filters",
+      error: err.message,
+    });
   }
 });
 
