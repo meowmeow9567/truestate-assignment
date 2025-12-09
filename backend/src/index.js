@@ -22,7 +22,7 @@ app.get("/health", (req, res) => {
 app.get("/api/sales", async (req, res) => {
   const page = parseInt(req.query.page || "1", 10);
 
-  // 👇 read pageSize (from frontend) OR limit OR default to 10
+  // 👇 page size: default 10, but also accept ?pageSize=... or ?limit=...
   const pageSize = parseInt(
     req.query.pageSize || req.query.limit || "10",
     10
@@ -31,11 +31,16 @@ app.get("/api/sales", async (req, res) => {
   const offset = (page - 1) * pageSize;
 
   try {
+    // 1) Paginated rows
     const dataResult = await pool.query(
       "SELECT * FROM sales ORDER BY id LIMIT $1 OFFSET $2",
       [pageSize, offset]
     );
+
+    // 2) Total rows (for pagination)
     const countResult = await pool.query("SELECT COUNT(*) AS count FROM sales");
+
+    // 3) Summary across all sales
     const summaryResult = await pool.query(`
       SELECT
         COALESCE(SUM(quantity), 0)                    AS total_units_sold,
@@ -46,6 +51,7 @@ app.get("/api/sales", async (req, res) => {
 
     const summaryRow = summaryResult.rows[0];
 
+    // 4) Normalize each row: snake_case + camelCase + tags[]
     const rows = dataResult.rows.map((row) => {
       const tagsArray = row.tags
         ? String(row.tags)
@@ -75,25 +81,34 @@ app.get("/api/sales", async (req, res) => {
       };
 
       return {
-        ...row,
-        ...camel,
+        ...row,   // snake_case
+        ...camel, // camelCase
         tags: tagsArray,
       };
     });
 
+    const totalCount = Number(countResult.rows[0].count); // should be 10000
+
     res.json({
       success: true,
-      total: Number(countResult.rows[0].count), // 10000 rows total
+
+      // 👇 give frontend all the pagination info in multiple names
+      total: totalCount,
+      totalCount,
       page,
-      limit: pageSize,                          // 👈 10 rows per page
+      pageSize,
+      limit: pageSize,
+
       data: rows,
       summary: {
         totalUnitsSold: Number(summaryRow.total_units_sold),
         totalUnits: Number(summaryRow.total_units_sold),
         unitsSold: Number(summaryRow.total_units_sold),
         total_units_sold: Number(summaryRow.total_units_sold),
+
         totalAmount: Number(summaryRow.total_amount),
         total_amount: Number(summaryRow.total_amount),
+
         totalDiscount: Number(summaryRow.total_discount),
         total_discount: Number(summaryRow.total_discount),
       },
