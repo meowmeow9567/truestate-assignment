@@ -1,27 +1,21 @@
 // backend/src/config/db.js
-require('dotenv').config();
-const mongoose = require('mongoose');
+const dotenv = require("dotenv");
+const { Pool } = require("pg");
 
-async function connectDB() {
-  const uri = process.env.MONGODB_URI;
+dotenv.config();
 
-  if (!uri) {
-    console.error('❌ MONGODB_URI is not set in .env');
-    throw new Error('MONGODB_URI missing');
-  }
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-  // Log URI without credentials (for debugging)
-  const safeUri = uri.replace(/\/\/.*@/, '//<credentials>@');
-  console.log('🔌 Attempting MongoDB connection to:', safeUri);
+pool.on("connect", () => {
+  console.log("📦 Connected to PostgreSQL Database");
+});
 
-  try {
-    await mongoose.connect(uri);
-    console.log('✅ MongoDB connected successfully');
-  } catch (err) {
-    console.error('❌ MongoDB connection error (full details below):');
-    console.error(err); // shows real cause, not just generic message
-    throw err;
-  }
-}
+pool.on("error", (err) => {
+  console.error("❌ Unexpected Postgres error", err);
+  process.exit(-1);
+});
 
-module.exports = connectDB;
+module.exports = pool;

@@ -46,3 +46,9 @@ npm run dev
 > Note: The original dataset file `backend/data/Retail_Sales_Dataset.csv` and the generated SQLite DB are not committed to Git due to GitHub's 100MB file size limit.  
 > To run locally, place the CSV under `backend/data/` and execute the import script:
 > `node src/scripts/importSales.js`.
+
+
+Due to the limits of free-tier cloud hosting:
+A partial dataset (10,000 rows) is imported into the database
+The application fully supports full dataset usage
+A script for full import is included and can be executed on higher-tier infrastructure

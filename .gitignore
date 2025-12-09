@@ -1,6 +1,18 @@
+# node_modules/
+# backend/data/
+# backend/src/database/
+# .env
+# *.db
+# dist/
+
+
 node_modules/
 backend/data/
+
+# Ignore everything in DB folder except one file
 backend/src/database/
-.env
+!backend/src/database/sales.db
+
 *.db
+.env
 dist/
