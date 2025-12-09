@@ -1,0 +1,569 @@
+/* Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #f5f5f7;
+    color: #111827;
+}
+
+/* Root layout */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    background-color: #f5f5f7;
+}
+
+/* HEADER – white bar, title left, search right */
+.app-header {
+    padding: 1rem 2rem;
+    background: #ffffff;
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.app-header .subtitle {
+    margin: 0.15rem 0 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.header-right {
+    flex: 0 0 340px;
+}
+
+/* Search bar in header */
+.search-bar {
+    width: 100%;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    font-size: 0.9rem;
+    background: #ffffff;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px #2563eb33;
+}
+
+.search-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 0.15rem;
+}
+
+
+/* MAIN SHELL – keeps everything the same width */
+.app-layout {
+    padding: 1rem 2rem 2rem;
+}
+
+/* White card that holds filters + sort + summary + table */
+/* White area that holds filters + sort + summary + table */
+.main-content {
+    width: 100%;
+    /* full width like header */
+    margin: 0;
+    /* no centering */
+    background: #ffffff;
+    padding: 1rem 2rem 2rem;
+    /* same side padding as header */
+    border-radius: 0;
+    /* no inner rounding at edges */
+    box-shadow: none;
+    /* no separate card shadow */
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+
+/* TOOLBAR – filters left, sort right, on ONE line */
+.toolbar {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Horizontal filters row */
+/* Horizontal filters row – all in ONE line */
+.filters-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    /* keep in one line on wide screens */
+}
+
+/* Refresh button */
+.filter-refresh-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.75rem;
+    border: none;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.filter-refresh-btn:hover {
+    background: #e5e7eb;
+}
+
+/* Each filter dropdown “pill” – ONLY these are greyish */
+/* ONLY the dropdown boxes are greyish */
+.filter-pill {
+    flex: 0 0 auto;
+    min-width: 130px;
+    /* was 150px */
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.75rem;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+}
+
+
+.filter-pill select {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    color: #111827;
+    outline: none;
+}
+
+
+/* Range-style filters (Age, Date) inside a pill */
+.filter-pill-range {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.filter-pill-label {
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-bottom: 0.125rem;
+}
+
+.filter-range-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.filter-range-inline input[type='number'],
+.filter-range-inline input[type='date'] {
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+    background: #ffffff;
+}
+
+/* Sort dropdown (right side of toolbar) */
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sort-dropdown label {
+    font-size: 0.85rem;
+    color: #374151;
+}
+
+.sort-dropdown select {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    font-size: 0.85rem;
+    background: #ffffff;
+}
+
+/* SUMMARY CARDS UNDER TOOLBAR */
+.summary-row {
+    width: max-content;
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.summary-card {
+    flex: 0 0 auto;
+    min-width: 240px;
+    max-width: 320px;
+    padding: 0.9rem 1.2rem;
+
+    border-radius: 12px;
+    /* ⬅ More rounded */
+    border: 1.5px solid #E2E8F0;
+    /* ⬅ Light border like reference */
+
+    background: #ffffff;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+}
+
+.summary-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.summary-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 1px solid #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.summary-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.summary-main-srs {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.summary-sub {
+    margin-top: 0.15rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+
+/* TABLE – header grey, rows white */
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    background: #ffffff;
+}
+
+/* header row grey */
+.sales-table thead {
+    background: #f3f4f6;
+}
+
+.sales-table thead th {
+    background: #f3f4f6;
+}
+
+/* data rows white */
+.sales-table tbody td {
+    background: #ffffff;
+}
+
+.sales-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.pagination button {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Misc */
+.loader {
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.error-banner {
+    padding: 0.5rem 0.75rem;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.no-results {
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* Shell: left sidebar + right main area */
+.app-shell {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+/* Shell: left sidebar + right main area */
+.app-shell {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+/* LEFT SIDEBAR – grey background column */
+.side-nav {
+    width: 280px;
+    /* was 260px – a bit broader now */
+    background: #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0.75rem;
+    gap: 1rem;
+}
+
+/* Top white card: Vault + user + caret */
+.side-card {
+    background: #ffffff;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.side-card-top {
+    padding: 0.75rem 0.75rem;
+}
+
+.side-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.side-top-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.side-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.75rem;
+    background: #111827;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #f9fafb;
+}
+
+.side-vault-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.side-vault-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.side-vault-user {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.side-caret {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Primary nav items: Dashboard / Nexus / Intake (no box) */
+.side-primary-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0 0.25rem;
+}
+
+.side-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    color: #374151;
+    cursor: pointer;
+}
+
+.side-link:hover {
+    background: #e5e7eb;
+}
+
+.side-link-icon {
+    font-size: 0.9rem;
+}
+
+/* Card headers: Services / Invoices */
+.side-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+    margin-bottom: 0.35rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+}
+
+.side-card-icon {
+    font-size: 0.9rem;
+    margin-right: 0.25rem;
+}
+
+.side-card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111827;
+    flex: 1;
+}
+
+/* Items inside white cards */
+.side-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 0.25rem;
+}
+
+.side-card-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.4rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    color: #374151;
+    cursor: pointer;
+}
+
+.side-card-item:hover {
+    background: #f3f4f6;
+}
+
+.side-card-item-active {
+    background: #e5f0ff;
+    font-weight: 600;
+    color: #111827;
+}
+
+.side-caret {
+    font-size: 0.8rem;
+    color: #6b7280;
+    transition: transform 0.15s ease-out;
+}
+
+.side-caret.open {
+    transform: rotate(180deg);
+}
+
+
+/* RIGHT MAIN AREA */
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive – stack header & toolbar nicely on small screens */
+@media (max-width: 900px) {
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-right {
+        flex: 1 1 auto;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sort-dropdown {
+        justify-content: flex-end;
+    }
+}
